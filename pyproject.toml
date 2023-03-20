@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "app-wiki-prof"
+version = "0.1.0"
+description = ""
+authors = ["gbPagano <guilhermebpagano@gmail.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pytest = "^7.2.2"
+isort = "^5.12.0"
+ruff = "^0.0.257"
+pip-audit = "^2.5.2"
+taskipy = "^1.10.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+lint = { cmd = "ruff src", help = "Realiza uma análise estática do código fonte"}
+format = { cmd = "isort src && ruff src --fix && black src", help = "Formata os arquivos .py do projeto, seguindo os padrões da PEP 8" }
+security = { cmd = "pip-audit", help = "Realiza uma análise de segurança das bibliotecas utilizadas" }
