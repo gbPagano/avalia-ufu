@@ -27,4 +27,5 @@ build-backend = "poetry.core.masonry.api"
 lint = { cmd = "ruff src", help = "Realiza uma análise estática do código fonte"}
 format = { cmd = "isort src && ruff src --fix && black src", help = "Formata o código fonte do projeto, seguindo os padrões da PEP 8" }
 format_tests = { cmd = "isort tests && ruff tests --fix && black tests", help = "Formata os testes do projeto" }
+test = { cmd = "pytest -v", help = "Executa todos os testes"}
 security = { cmd = "pip-audit", help = "Realiza uma análise de segurança das bibliotecas utilizadas" }
