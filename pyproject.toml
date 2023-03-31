@@ -28,6 +28,9 @@ pytest-cov = "^4.0.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pytest.ini_options]
+pythonpath = "."
+
 [tool.taskipy.tasks]
 lint = { cmd = "ruff src", help = "Realiza uma análise estática do código fonte"}
 format = { cmd = "isort src && ruff src --fix && black src", help = "Formata o código fonte do projeto, seguindo os padrões da PEP 8" }
