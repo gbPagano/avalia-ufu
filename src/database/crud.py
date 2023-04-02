@@ -4,7 +4,7 @@ from . import models, schemas
 from .core import DBContext
 
 
-@manager.user_loader()
+@manager.user_loader
 def get_user_by_email(email: str, db = None) -> schemas.User:
     if db is None:
         with DBContext() as db:

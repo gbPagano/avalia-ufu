@@ -125,7 +125,7 @@ def send_confirmation_email(token: str, email_target: str):
     msg.set_content(
         f"""\
         Click no link abaixo para validar a sua conta:
-        http://localhost:8080/user/confirm-account/{token}?validate_email={email_target}
+        http://localhost:8000/user/confirm-account/{token}?validate_email={email_target}
         """,
     )
 
