@@ -5,9 +5,12 @@ from .core import DBContext
 
 
 @manager.user_loader()
-def get_user_by_email(email: str) -> schemas.User:
-    with DBContext() as db:
-        return db.query(models.User).filter(models.User.email == email).first()
+def get_user_by_email(email: str, db = None) -> schemas.User:
+    if db is None:
+        with DBContext() as db:
+            return db.query(models.User).filter(models.User.email == email).first()
+    return db.query(models.User).filter(models.User.email == email).first()
+
 
 
 def create_user(user: schemas.UserCreate):
