@@ -8,8 +8,8 @@ from fastapi.responses import RedirectResponse
 
 
 MAIN_URL = "http://localhost:8000"
-EMAIL = "avaliaufu@gmail.com"
-EMAIL_PASSWORD = "jpotofxfskaysung"
+EMAIL = "avaliaufu@gmail.com"#"support@avaliaufu.online"
+EMAIL_PASSWORD = "ekmdylpytpahvmrb"
 SECRET = "super-secret-key"
 
 
@@ -38,7 +38,7 @@ def send_confirmation_email(token: str, email_target: str):
     msg = EmailMessage()
 
     msg['Subject'] = f'Confirmação de cadastro - App Wiki UFU'
-    msg['From'] = EMAIL
+    msg['From'] = "Avalia UFU" 
     msg['To'] = email_target
     msg.set_content(f"""
         Click no link abaixo para validar a sua conta:
