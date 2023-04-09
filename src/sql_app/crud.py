@@ -26,14 +26,32 @@ def get_profs_lecionando(db: Session, id_disc_input: int):
 
     return disc.professores_desta
 
+def get_vinculos(db: Session):
+    return db.query(models.Vinculos_Profs_Discs).all();
+
 # creates 
 
-def criar_prof(db: Session, prof: schemas.ProfCreate):
+def criar_prof(db: Session, prof: schemas.Prof):
     # instância de modelo do SQLAlchemy com os dados do objeto:
-    db_prof = models.Prof(id_prof=prof.id, id_faculdade=prof.id_faculdade, 
+    db_prof = models.Prof(id_prof=prof.id_prof, id_faculdade=prof.id_faculdade, 
                           nome=prof.nome, descricao=prof.descricao, nota=prof.nota)
     db.add(db_prof)
     db.commit()
     db.refresh(db_prof)
     return db_prof
 
+def criar_disc(db: Session, disc: schemas.Disciplina):
+    db_disc = models.Disciplina(id_disciplina=disc.id_disciplina, nome=disc.nome, id_faculdade=disc.id_faculdade)
+    db.add(db_disc)
+    db.commit()
+    db.refresh(db_disc)
+    return db_disc
+
+def criar_vinculo_prof_disc(db: Session, vinculo: schemas.VinculoProfDisc):
+    db_vinculo = models.Vinculos_Profs_Discs(id_vinculo=vinculo.id_vinculo, 
+                                             id_prof=vinculo.id_prof, 
+                                             id_disciplina=vinculo.id_disciplina)
+    db.add(db_vinculo)
+    db.commit()
+    db.refresh(db_vinculo)
+    return db_vinculo

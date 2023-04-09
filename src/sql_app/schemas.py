@@ -2,35 +2,42 @@ from pydantic import BaseModel
 
 # contém somente models do pydantic
 
-class DisciplinaBase(BaseModel):
-    nome: str
-
-class ProfBase(BaseModel):
-    nome: str
-    descricao: str
-    nota: float
-
-class DisciplinaCreate(DisciplinaBase):
-    id: int
+class Disciplina(BaseModel):
+    id_disciplina: int
     id_faculdade: int
 
-class ProfCreate(ProfBase):
-    id: int
-    id_faculdade: int
+    nome: str
 
-class Disciplina(DisciplinaBase):
     professores_desta: list["Prof"] = []
 
     class Config:
         orm_mode = True
 
-class Prof(ProfBase):
+class Prof(BaseModel):
+    id_prof: int
+    id_faculdade: int
+
+    nome: str
+    descricao: str
+    nota: float
+
     disciplinas_lecionadas: list[Disciplina] = []
     
     class Config:
         orm_mode = True
 
+# necessário pois a classe Disciplina usa uma entidade Prof que é criada posteriormente
 Disciplina.update_forward_refs()
+
+class VinculoProfDisc(BaseModel):
+    id_vinculo: int
+    id_prof: int
+    id_disciplina: int
+
+    class Config:
+        orm_mode = True
+    
+
 
 
 

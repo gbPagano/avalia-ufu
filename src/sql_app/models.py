@@ -55,4 +55,5 @@ class Review(Base):
 class Faculdade(Base):
     __tablename__ = "faculdades"
 
-    id_faculdade = Column(String, primary_key=True, index=True)
+    id_faculdade = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False, index=True)
