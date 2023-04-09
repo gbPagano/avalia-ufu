@@ -25,12 +25,9 @@ class Prof(Base):
                                           back_populates="professores_desta")
     
     def __repr__(self):
-        discs_lecionadas_str = ""
+        discs_lecionadas_nomes = [d.nome for d in self.disciplinas_lecionadas]
 
-        for disc_lecionada in self.disciplinas_lecionadas:
-            discs_lecionadas_str += disc_lecionada.nome + ' '
-
-        return f'Prof(nome={self.nome}, id_prof={self.id_prof}\ndiscs_lecionadas={discs_lecionadas_str})'
+        return f'Prof(nome={self.nome}, id_prof={self.id_prof}\ndiscs_lecionadas={discs_lecionadas_nomes})'
 
 class Disciplina(Base):
     __tablename__ = "disciplinas"
@@ -44,6 +41,11 @@ class Disciplina(Base):
     professores_desta = relationship("Prof",
                                     secondary="vinculos_profs_discs",
                                     back_populates="disciplinas_lecionadas") 
+    
+    def __repr__(self):
+        profs_desta = [p.nome for p in self.professores_desta]
+
+        return f'Disciplina(nome={self.nome}\nprofs_desta={profs_desta})'
 
 class Vinculos_Profs_Discs(Base):
     __tablename__ = "vinculos_profs_discs"
@@ -70,16 +72,21 @@ facul = Faculdade(id_faculdade=1, nome="famat")
 disc1 = Disciplina(id_disciplina=1, id_faculdade=1, nome="calculo1")
 disc2 = Disciplina(id_disciplina=2, id_faculdade=1, nome="metodos")
 disc3 = Disciplina(id_disciplina=3, id_faculdade=1, nome="algebra")
-prof = Prof(id_prof=1, id_faculdade=1, nome="aaa", descricao="aaasda", nota=10)
+prof1 = Prof(id_prof=1, id_faculdade=1, nome="aaa", descricao="aaasda", nota=10)
+prof2 = Prof(id_prof=2, id_faculdade=1, nome="bbb", descricao="asda", nota=10)
+prof3 = Prof(id_prof=3, id_faculdade=1, nome="ccc", descricao="axzc", nota=10)
 vinculo1 = Vinculos_Profs_Discs(id_vinculo=1, id_prof=1, id_disciplina=1)
 vinculo2 = Vinculos_Profs_Discs(id_vinculo=2, id_prof=1, id_disciplina=2)
 vinculo3 = Vinculos_Profs_Discs(id_vinculo=3, id_prof=1, id_disciplina=3)
+vinculo4 = Vinculos_Profs_Discs(id_vinculo=4, id_prof=2, id_disciplina=1)
+vinculo5 = Vinculos_Profs_Discs(id_vinculo=5, id_prof=3, id_disciplina=1)
 
 
-session.add_all([facul, prof, disc1, disc2, disc3, vinculo1, vinculo2, vinculo3])
+session.add_all([facul, prof1, prof2, prof3, disc1, disc2, disc3, vinculo1, vinculo2, vinculo3, vinculo4, vinculo5])
 
 session.commit()
 
 from pprint import pprint
 
 pprint(session.query(Prof).first())
+pprint(session.query(Disciplina).all())
