@@ -27,7 +27,7 @@ class Prof(Base):
     def __repr__(self):
         discs_lecionadas_nomes = [d.nome for d in self.disciplinas_lecionadas]
 
-        return f'Prof(nome={self.nome}, id_prof={self.id_prof}\ndiscs_lecionadas={discs_lecionadas_nomes})'
+        return f'Prof(nome={self.nome}, id_prof={self.id_prof}, discs_lecionadas={discs_lecionadas_nomes})'
 
 class Disciplina(Base):
     __tablename__ = "disciplinas"
@@ -45,7 +45,7 @@ class Disciplina(Base):
     def __repr__(self):
         profs_desta = [p.nome for p in self.professores_desta]
 
-        return f'Disciplina(nome={self.nome}\nprofs_desta={profs_desta})'
+        return f'Disciplina(nome={self.nome}, profs_desta={profs_desta})'
 
 class Vinculos_Profs_Discs(Base):
     __tablename__ = "vinculos_profs_discs"
