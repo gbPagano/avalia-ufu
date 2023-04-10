@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from sqlalchemy import Table, Boolean, Column, ForeignKey, Integer, String, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 
 from .database import Base
 

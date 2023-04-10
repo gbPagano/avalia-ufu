@@ -8,13 +8,23 @@ def get_prof(db: Session, id_prof_input: int):
     return db.query(models.Prof).filter(models.Prof.id_prof == id_prof_input).first()
 
 def get_profs(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Prof).offset(skip).limit(limit).all()
+    query = db.query(models.Prof).offset(skip).limit(limit).all()
+
+    for prof in query:
+        prof.disciplinas_lecionadas
+
+    return query
 
 def get_disciplina(db: Session, id_disc_input: int):
     return db.query(models.Disciplina).filter(models.Disciplina.id_disciplina == id_disc_input).first()
 
 def get_disciplinas(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Disciplina).offset(skip).limit(limit).all()
+    discs = db.query(models.Disciplina).offset(skip).limit(limit).all()
+
+    for disc in discs:
+        disc.professores_desta
+
+    return discs
 
 def get_discs_lecionadas(db: Session, id_prof_input: int):
     prof = db.query(models.Prof).filter(models.Prof.id_prof == id_prof_input).first()
@@ -55,3 +65,10 @@ def criar_vinculo_prof_disc(db: Session, vinculo: schemas.VinculoProfDisc):
     db.commit()
     db.refresh(db_vinculo)
     return db_vinculo
+
+def criar_facul(db: Session, facul: schemas.Faculdade):
+    db_facul = models.Faculdade(id_faculdade=facul.id_faculdade, nome=facul.nome)
+    db.add(db_facul)
+    db.commit()
+    db.refresh(db_facul)
+    return db_facul

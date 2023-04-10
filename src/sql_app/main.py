@@ -15,11 +15,15 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/faculs/", response_model=schemas.Faculdade)
+def criar_facul(facul: schemas.Faculdade, db: Session = Depends(get_db)):
+    return crud.criar_facul(db=db, facul=facul)
+
 @app.post("/profs/", response_model=schemas.Prof)
 def criar_prof(prof: schemas.Prof, db: Session = Depends(get_db)):
     return crud.criar_prof(db=db, prof=prof)
 
-@app.get("/profs/", response_model=list[schemas.Prof])
+@app.get("/profs/")
 def ler_profs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     profs = crud.get_profs(db, skip=skip, limit=limit)
     return profs
@@ -28,7 +32,7 @@ def ler_profs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def criar_disc(disc: schemas.Disciplina, db: Session = Depends(get_db)):
     return crud.criar_disc(db=db, disc=disc)
 
-@app.get("/discs/", response_model=list[schemas.Disciplina])
+@app.get("/discs/")
 def ler_discs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     discs = crud.get_disciplinas(db=db, skip=skip, limit=limit)
     return discs
