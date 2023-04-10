@@ -20,7 +20,8 @@ class Prof(Base):
     # prof1.disciplinas_lecionadas
     disciplinas_lecionadas = relationship("Disciplina", 
                                           secondary="vinculos_profs_discs",
-                                          back_populates="professores_desta")
+                                          back_populates="professores_desta",
+                                          lazy="joined")
 
 class Disciplina(Base):
     __tablename__ = "disciplinas"
@@ -33,7 +34,8 @@ class Disciplina(Base):
     #disc1.professores_desta
     professores_desta = relationship("Prof",
                                     secondary="vinculos_profs_discs",
-                                    back_populates="disciplinas_lecionadas") 
+                                    back_populates="disciplinas_lecionadas",
+                                    lazy="joined") 
 
 class Vinculos_Profs_Discs(Base):
     __tablename__ = "vinculos_profs_discs"

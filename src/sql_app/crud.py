@@ -10,9 +10,6 @@ def get_prof(db: Session, id_prof_input: int):
 def get_profs(db: Session, skip: int = 0, limit: int = 100):
     query = db.query(models.Prof).offset(skip).limit(limit).all()
 
-    for prof in query:
-        prof.disciplinas_lecionadas
-
     return query
 
 def get_disciplina(db: Session, id_disc_input: int):
@@ -20,9 +17,6 @@ def get_disciplina(db: Session, id_disc_input: int):
 
 def get_disciplinas(db: Session, skip: int = 0, limit: int = 100):
     discs = db.query(models.Disciplina).offset(skip).limit(limit).all()
-
-    for disc in discs:
-        disc.professores_desta
 
     return discs
 
