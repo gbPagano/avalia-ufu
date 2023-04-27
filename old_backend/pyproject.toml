@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "app-wiki-prof"
+version = "0.1.0"
+description = ""
+authors = ["gbPagano <guilhermebpagano@gmail.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+argon2-cffi = "^21.3.0"
+sqlalchemy = "^2.0.7"
+pydantic = "^1.10.7"
+uvicorn = "^0.21.1"
+fastapi = "^0.95.0"
+fastapi-login = "^1.9.0"
+python-multipart = "^0.0.6"
+pyjwt = "^2.6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pytest = "^7.2.2"
+isort = "^5.12.0"
+ruff = "^0.0.257"
+pip-audit = "^2.5.2"
+taskipy = "^1.10.3"
+pytest-cov = "^4.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+
+[tool.taskipy.tasks]
+lint = { cmd = "ruff src", help = "Realiza uma análise estática do código fonte"}
+format = { cmd = "isort src && ruff src --fix && black src", help = "Formata o código fonte do projeto, seguindo os padrões da PEP 8" }
+format_tests = { cmd = "isort tests && ruff tests --fix && black tests", help = "Formata os testes do projeto" }
+test = { cmd = "pytest -vv --cov=src", help = "Executa todos os testes"}
+coverage = { cmd = "coverage html -d /tmp/coverage && firefox /tmp/coverage/index.html", help = "Gera o relátorio de coverage do código"}
+security = { cmd = "pip-audit", help = "Realiza uma análise de segurança das bibliotecas utilizadas" }
