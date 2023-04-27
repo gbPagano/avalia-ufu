@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.database import schemas, crud, core
+from src.database import core, crud, schemas
+
 from .token import send_confirmation_email
 
 app_auth = APIRouter(
@@ -16,7 +17,9 @@ def register(
     db: Session = Depends(core.get_db),
 ):
     userdb_email = crud.get_user_by_email(email=user.email, db=db)
-    userdb_registration = crud.get_user_by_registration(registration=user.registration, db=db)
+    userdb_registration = crud.get_user_by_registration(
+        registration=user.registration, db=db
+    )
     if userdb_email or userdb_registration:
         raise HTTPException(status_code=400, detail="User already registered")
 

@@ -8,14 +8,12 @@ class UserBase(BaseModel):
     email: str
     registration: str
 
-
     @validator("email")
     def validate_email(cls, email):
-        pattern = r'\b[A-Za-z0-9._%+-]+@ufu.br\b'
+        pattern = r"\b[A-Za-z0-9._%+-]+@ufu.br\b"
         if not re.match(pattern, email):
             raise ValueError("it's not an email from ufu")
         return email
-    
 
 
 class UserCreate(UserBase):

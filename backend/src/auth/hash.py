@@ -3,7 +3,7 @@ from argon2.exceptions import VerifyMismatchError
 
 
 def encrypt(password: str) -> str:
-    """Receives a password in plain text and returns a hash      
+    """Receives a password in plain text and returns a hash
 
     Args:
         password (str): password get from user input
@@ -19,7 +19,7 @@ def encrypt(password: str) -> str:
 
 
 def decrypt(db_hash: str, password: str) -> bool:
-    """Receives a hash and a password in plain text, 
+    """Receives a hash and a password in plain text,
     and attempts to decrypt the hash with the password
 
     Args:

@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 
-from . import schemas, models
 from src.auth import hash
+
+from . import models, schemas
 
 
 def create_user(user: schemas.UserCreate, db: Session):
@@ -9,7 +10,7 @@ def create_user(user: schemas.UserCreate, db: Session):
     db_user = models.User(
         name=user.name,
         registration=user.registration,
-        email=user.email, 
+        email=user.email,
         hashed_password=hashed_password,
         is_confirmed=False,
         role=models.Role.user,
@@ -25,5 +26,6 @@ def get_user_by_email(email: str, db: Session) -> schemas.User:
 
 
 def get_user_by_registration(registration: str, db: Session) -> schemas.User:
-    return db.query(models.User).filter(models.User.registration == registration).first()
-
+    return (
+        db.query(models.User).filter(models.User.registration == registration).first()
+    )
