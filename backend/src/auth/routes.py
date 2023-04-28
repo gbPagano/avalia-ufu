@@ -1,9 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from pydantic import BaseModel
+from typing import Annotated
 from src.database import core, crud, schemas
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from .token import InvalidCredentialsException, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_current_user
+from datetime import datetime, timedelta
+from .hash import decrypt
+from .email_sender import send_confirmation_email
 
-from .token import send_confirmation_email
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 app_auth = APIRouter(
     prefix="",
@@ -25,6 +34,63 @@ def register(
 
     new_user = crud.create_user(user=user, db=db)
 
-    send_confirmation_email("token", "guilhermebpagano@gmail.com")
+    send_confirmation_email(new_user.email)
 
     return new_user
+
+@app_auth.post("/token", response_model=Token)
+def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(core.get_db),
+):
+    email = form_data.username
+    password = form_data.password
+    user = crud.get_user_by_email(email, db)
+    if not user or not decrypt(user.hashed_password, password):
+        raise InvalidCredentialsException
+
+    access_token = create_access_token(
+        data={"sub": user.email}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+from .token import get_current_user, InvalidCredentialsException, SECRET_KEY
+from src.database.schemas import User
+from jose import jwt, JWTError
+
+@app_auth.get('/confirm-account/{token}')
+def confirm_account(token: str, db: Session = Depends(core.get_db)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        email = payload.get("sub")
+        if email is None:
+            raise InvalidCredentialsException
+    except JWTError:
+        raise InvalidCredentialsException
+
+    user = crud.get_user_by_email(email, db)
+    if not user:
+        raise InvalidCredentialsException
+    
+    if user.is_confirmed:
+        raise HTTPException(status_code=409, detail="Account has already been activated")
+
+    user.is_confirmed = True
+    db.commit()
+    
+    user = crud.get_user_by_email(email, db)
+    return user
+    
+
+
+
+
+@app_auth.get("/me", response_model=User)
+def read_users_me(
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    print(current_user)
+    print(current_user.role)
+    print(type(current_user.role))
+    return current_user

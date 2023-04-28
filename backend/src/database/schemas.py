@@ -1,7 +1,7 @@
 import re
 
 from pydantic import BaseModel, validator
-
+from .models import Role
 
 class UserBase(BaseModel):
     name: str
@@ -24,7 +24,7 @@ class User(UserBase):
     id: int
     hashed_password: str
     is_confirmed: bool
-    role: str
+    role: Role
 
     class Config:
         orm_mode = True
