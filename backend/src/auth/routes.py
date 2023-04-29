@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from typing import Annotated
 from src.database import core, crud, schemas
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from .token import InvalidCredentialsException, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_current_user
+from .token import InvalidCredentialsException, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_current_user, ExpiredTokenException
 from datetime import datetime, timedelta
-from .hash import decrypt
+from .crypto import decrypt, simetric_encrypt, simetric_decrypt
 from .email_sender import send_confirmation_email
 
 
@@ -34,7 +34,7 @@ def register(
 
     new_user = crud.create_user(user=user, db=db)
 
-    send_confirmation_email(new_user.email)
+    send_confirmation_email(user.email)
 
     return new_user
 
@@ -57,15 +57,19 @@ def login_for_access_token(
 
 from .token import get_current_user, InvalidCredentialsException, SECRET_KEY
 from src.database.schemas import User
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 
 @app_auth.get('/confirm-account/{token}')
-def confirm_account(token: str, db: Session = Depends(core.get_db)):
+def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
+    email_target = simetric_decrypt(tgt)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email = payload.get("sub")
-        if email is None:
+        if email is None or email != email_target:
             raise InvalidCredentialsException
+    except ExpiredSignatureError:
+        send_confirmation_email(email_target) 
+        raise ExpiredTokenException
     except JWTError:
         raise InvalidCredentialsException
 
@@ -74,7 +78,8 @@ def confirm_account(token: str, db: Session = Depends(core.get_db)):
         raise InvalidCredentialsException
     
     if user.is_confirmed:
-        raise HTTPException(status_code=409, detail="Account has already been activated")
+        return payload
+    #     raise HTTPException(status_code=409, detail="Account has already been activated")
 
     user.is_confirmed = True
     db.commit()

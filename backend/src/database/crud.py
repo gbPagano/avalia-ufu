@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 
-from src.auth import hash
+from src.auth import crypto
 
 from . import models, schemas
 
 
 def create_user(user: schemas.UserCreate, db: Session):
-    hashed_password = hash.encrypt(user.password)
+    hashed_password = crypto.encrypt(user.password)
     db_user = models.User(
         name=user.name,
         registration=user.registration,

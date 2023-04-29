@@ -4,6 +4,7 @@ import ssl
 from email.message import EmailMessage
 
 from .token import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from .crypto import simetric_encrypt
 
 MAIN_URL = "http://localhost:8000"
 EMAIL = "avaliaufu@gmail.com"
@@ -14,15 +15,15 @@ def send_confirmation_email(email_target: str):
     token = create_access_token(
         data={"sub": email_target}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
-    msg = EmailMessage()
-
+    tgt = simetric_encrypt(email_target)
+    msg = EmailMessage() 
     msg["Subject"] = "Confirmação de cadastro - App Wiki UFU"
     msg["From"] = "Avalia UFU"
     msg["To"] = "guilhermebpagano@gmail.com"
     msg.set_content(
         f"""
         Click no link abaixo para validar a sua conta:
-        {MAIN_URL}/confirm-account/{token}
+        {MAIN_URL}/confirm-account/{token}?tgt={tgt}
         """,
     )
 

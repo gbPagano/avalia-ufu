@@ -9,8 +9,8 @@ from fastapi.security import OAuth2PasswordBearer
 
 from src.database import crud, core
 
-SECRET_KEY = "dbec0c9fdcd9cffae832de157a223e79213b47620045a40ad3591cfa77c08857"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = "W7S6ECEWiOdu6OGGV_uUtS_l-pIjg4dwVPjMGOePeMw="
+ACCESS_TOKEN_EXPIRE_MINUTES = 15
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -21,10 +21,15 @@ InvalidCredentialsException = HTTPException(
     headers={"WWW-Authenticate": "Bearer"}
 )
 
+ExpiredTokenException = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Token has expired",
+    headers={"WWW-Authenticate": "Bearer"}
+)
 
 def create_access_token(data: dict, minutes: int = 15):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes)
+    expire = datetime.utcnow() + timedelta(minutes=minutes)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
     return encoded_jwt
