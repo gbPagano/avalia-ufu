@@ -2,7 +2,9 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet, InvalidToken
 
-from .token import SECRET_KEY, InvalidCredentialsException
+from .exceptions import InvalidCredentialsException
+from .token import SECRET_KEY
+
 
 def encrypt(password: str) -> str:
     """Receives a password in plain text and returns a hash

@@ -1,10 +1,9 @@
 import smtplib
 import ssl
-
 from email.message import EmailMessage
 
-from .token import create_access_token
 from .crypto import simetric_encrypt
+from .token import manager
 
 MAIN_URL = "http://localhost:8000"
 EMAIL = "avaliaufu@gmail.com"
@@ -12,9 +11,9 @@ EMAIL_PASSWORD = "ekmdylpytpahvmrb"
 
 
 def send_confirmation_email(email_target: str):
-    token = create_access_token(data={"sub": email_target})
+    token = manager.create_access_token(data={"sub": email_target})
     tgt = simetric_encrypt(email_target)
-    msg = EmailMessage() 
+    msg = EmailMessage()
     msg["Subject"] = "Confirmação de cadastro - App Wiki UFU"
     msg["From"] = "Avalia UFU"
     msg["To"] = "guilhermebpagano@gmail.com"

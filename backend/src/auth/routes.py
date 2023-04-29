@@ -1,23 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
 from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.security import OAuth2PasswordRequestForm
+from jose import ExpiredSignatureError, JWTError, jwt
+from sqlalchemy.orm import Session
+
 from src.database import core, crud, schemas
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from .token import InvalidCredentialsException, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_current_user, ExpiredTokenException
-from datetime import datetime, timedelta
-from .crypto import decrypt, simetric_encrypt, simetric_decrypt
+from src.database.schemas import User
+
+from .crypto import decrypt, simetric_decrypt
 from .email_sender import send_confirmation_email
+from .exceptions import ExpiredTokenException, InvalidCredentialsException
+from .token import SECRET_KEY, manager
 
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 app_auth = APIRouter(
     prefix="",
     tags=["authentication"],
-    )
+)
 
 
 @app_auth.post("/register")
@@ -37,14 +37,13 @@ def register(
 
     send_confirmation_email(user.email)
 
-    access_token = create_access_token(
-        data={"sub": user.email}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    access_token = manager.create_access_token(data={"sub": user.email})
     response.set_cookie(key="access-token", value=access_token, httponly=True)
 
     return new_user
 
-@app_auth.post("/login") 
+
+@app_auth.post("/login")
 def login(
     response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -56,15 +55,13 @@ def login(
     if not user or not decrypt(user.hashed_password, password):
         raise InvalidCredentialsException
 
-    access_token = create_access_token(
-        data={"sub": user.email}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    access_token = manager.create_access_token(data={"sub": user.email})
     response.set_cookie(key="access-token", value=access_token, httponly=True)
 
     return user
 
 
-@app_auth.post("/logout") 
+@app_auth.post("/logout")
 def logout(
     response: Response,
 ):
@@ -73,11 +70,7 @@ def logout(
     return response
 
 
-from .token import get_current_user, InvalidCredentialsException, SECRET_KEY
-from src.database.schemas import User
-from jose import jwt, JWTError, ExpiredSignatureError
-
-@app_auth.get('/confirm-account/{token}')
+@app_auth.get("/confirm-account/{token}")
 def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
     email_target = simetric_decrypt(tgt)
     try:
@@ -86,7 +79,7 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
         if email is None or email != email_target:
             raise InvalidCredentialsException
     except ExpiredSignatureError:
-        send_confirmation_email(email_target) 
+        send_confirmation_email(email_target)
         raise ExpiredTokenException
     except JWTError:
         raise InvalidCredentialsException
@@ -94,19 +87,19 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
     user = crud.get_user_by_email(email, db)
     if not user:
         raise InvalidCredentialsException
-    
+
     if user.is_confirmed:
-        raise HTTPException(status_code=409, detail="Account has already been activated")
+        raise HTTPException(
+            status_code=409, detail="Account has already been activated"
+        )
 
     user.is_confirmed = True
     db.commit()
-    
+
     user = crud.get_user_by_email(email, db)
     return user
-  
-@app_auth.get("/me", response_model=User)
-def read_users_me(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
 
+
+@app_auth.get("/me", response_model=User)
+def read_users_me(current_user: Annotated[User, Depends(manager.current_user)]):
     return current_user
