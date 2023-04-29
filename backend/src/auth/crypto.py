@@ -1,6 +1,8 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from cryptography.fernet import Fernet, InvalidToken
 
+from .token import SECRET_KEY, InvalidCredentialsException
 
 def encrypt(password: str) -> str:
     """Receives a password in plain text and returns a hash
@@ -36,3 +38,14 @@ def decrypt(db_hash: str, password: str) -> bool:
         return True
     except VerifyMismatchError:
         return False
+
+
+def simetric_encrypt(target: str) -> str:
+    return Fernet(SECRET_KEY).encrypt(target.encode()).decode()
+
+
+def simetric_decrypt(target: str) -> str:
+    try:
+        return Fernet(SECRET_KEY).decrypt(target).decode()
+    except InvalidToken:
+        raise InvalidCredentialsException
