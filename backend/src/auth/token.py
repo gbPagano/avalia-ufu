@@ -2,30 +2,34 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 
 from jose import jwt, JWTError
-from fastapi.security import OAuth2PasswordBearer
 
-from src.database import crud, core
+
+from src.database import crud, core, schemas
 
 SECRET_KEY = "W7S6ECEWiOdu6OGGV_uUtS_l-pIjg4dwVPjMGOePeMw="
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8  # 8 hours
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 InvalidCredentialsException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Invalid credentials",
-    headers={"WWW-Authenticate": "Bearer"}
 )
 
 ExpiredTokenException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Token has expired",
-    headers={"WWW-Authenticate": "Bearer"}
 )
+
+UnconfirmedAccountException = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Unconfirmed account",
+)
+
 
 def create_access_token(data: dict, minutes: int = 15):
     to_encode = data.copy()
@@ -35,7 +39,16 @@ def create_access_token(data: dict, minutes: int = 15):
     return encoded_jwt
 
 
-def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(core.get_db)):
+def get_current_token(request: Request):
+    
+    token = request.cookies.get("access-token")
+    if not token:
+        raise InvalidCredentialsException
+
+    return token
+
+
+def get_current_user(token: Annotated[str, Depends(get_current_token)], db: Session = Depends(core.get_db)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email = payload.get("sub")
@@ -51,5 +64,10 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session 
     return user
 
 
-
-
+def get_current_confirmed_user(
+    user: schemas.User = Depends(get_current_user) 
+):
+    if not user.is_confirmed:
+        raise UnconfirmedAccountException
+        
+    return user

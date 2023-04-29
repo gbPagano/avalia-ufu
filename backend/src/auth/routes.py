@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Annotated
@@ -17,24 +17,12 @@ class Token(BaseModel):
 app_auth = APIRouter(
     prefix="",
     tags=["authentication"],
-
     )
-@app_auth.post('/login')
-def login(
-    data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(core.get_db),
-):
-    email = data.username
-    password = data.password
 
-    user = crud.get_user_by_email(email, db)
-    if not user or not decrypt(user.hashed_password, password):
-        raise InvalidCredentialsException
- 
-    return user
 
 @app_auth.post("/register")
 def register(
+    response: Response,
     user: schemas.UserCreate,
     db: Session = Depends(core.get_db),
 ):
@@ -49,10 +37,16 @@ def register(
 
     send_confirmation_email(user.email)
 
+    access_token = create_access_token(
+        data={"sub": user.email}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+    response.set_cookie(key="access-token", value=access_token, httponly=True)
+
     return new_user
 
-@app_auth.post("/token", response_model=Token)
-def login_for_access_token(
+@app_auth.post("/login") 
+def login(
+    response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(core.get_db),
 ):
@@ -65,7 +59,18 @@ def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.email}, minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    response.set_cookie(key="access-token", value=access_token, httponly=True)
+
+    return user
+
+
+@app_auth.post("/logout") 
+def logout(
+    response: Response,
+):
+    response.set_cookie(key="access-token", value="", httponly=True)
+    response.status_code = 200
+    return response
 
 
 from .token import get_current_user, InvalidCredentialsException, SECRET_KEY
@@ -91,24 +96,17 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
         raise InvalidCredentialsException
     
     if user.is_confirmed:
-        return payload
-    #     raise HTTPException(status_code=409, detail="Account has already been activated")
+        raise HTTPException(status_code=409, detail="Account has already been activated")
 
     user.is_confirmed = True
     db.commit()
     
     user = crud.get_user_by_email(email, db)
     return user
-    
-
-
-
-
+  
 @app_auth.get("/me", response_model=User)
 def read_users_me(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
-    print(current_user)
-    print(current_user.role)
-    print(type(current_user.role))
+
     return current_user
