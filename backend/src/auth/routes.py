@@ -17,8 +17,21 @@ class Token(BaseModel):
 app_auth = APIRouter(
     prefix="",
     tags=["authentication"],
-)
 
+    )
+@app_auth.post('/login')
+def login(
+    data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(core.get_db),
+):
+    email = data.username
+    password = data.password
+
+    user = crud.get_user_by_email(email, db)
+    if not user or not decrypt(user.hashed_password, password):
+        raise InvalidCredentialsException
+ 
+    return user
 
 @app_auth.post("/register")
 def register(
