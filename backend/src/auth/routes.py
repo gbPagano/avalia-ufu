@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from src.database import core, crud, schemas
 from src.database.schemas import User
 
-from .crypto import decrypt, simetric_decrypt
+from .crypto import decrypt, symmetric_decrypt
 from .email_sender import send_confirmation_email
 from .exceptions import ExpiredTokenException, InvalidCredentialsException
 from .token import SECRET_KEY, manager
@@ -72,7 +72,7 @@ def logout(
 
 @app_auth.get("/confirm-account/{token}")
 def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
-    email_target = simetric_decrypt(tgt)
+    email_target = symmetric_decrypt(tgt)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email = payload.get("sub")
