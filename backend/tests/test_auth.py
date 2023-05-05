@@ -37,12 +37,6 @@ app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 
-def test_get_main():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"hello": "world"}
-
-
 def test_invalid_register_user():
     response = client.post(
         "/register",
@@ -97,6 +91,11 @@ def test_logout():
     assert response.status_code == 200
 
 
+def test_get_professor_unlogged_fails():
+    response = client.get("/alexandre")
+    assert response.status_code == 401, response.text
+
+
 def test_get_me_fails():
     response = client.get("/me")
     assert response.status_code == 401, response.text
@@ -134,10 +133,46 @@ def test_correct_login():
     assert data["name"] == "testinho", response.text
 
 
+def test_get_professor_unconfirmed_fails():
+    response = client.get("/alexandre")
+    assert response.status_code == 401, response.status_code
+    assert "Unconfirmed account" in response.text
+
+
+def test_wrong_confirm_account():
+    url = send_confirmation_email("")
+    response = client.get(url)
+    assert response.status_code == 401, response.status_code
+
+
+def test_expired_confirm_account():
+    url = send_confirmation_email("test@ufu.br", minutes=-10)
+    response = client.get(url)
+    assert response.status_code == 401, response.status_code
+    assert "Token has expired" in response.text
+
+
+def test_invalid_token_confirm_account():
+    response = client.get("/confirm-account/invalidtoken?tgt=invalidtarget")
+    assert response.status_code == 401, response.status_code
+
+
 def test_confirm_account():
     url = send_confirmation_email("test@ufu.br")
     response = client.get(url)
     data = response.json()
     assert response.status_code == 200, response.text
     assert data["is_confirmed"], response.text
+
+def test_already_confirmed_account():
+    url = send_confirmation_email("test@ufu.br")
+    response = client.get(url)
+    assert response.status_code == 409, response.text
+    assert "Account has already been activated" in response.text
+
+
+def test_get_professor_confirmed_works():
+    response = client.get("/alexandre")
+    assert response.status_code == 200, response.status_code
+    assert response.json() == {"professor": "alexandre"}, response.text
 
