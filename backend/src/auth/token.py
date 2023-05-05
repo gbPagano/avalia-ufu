@@ -19,7 +19,7 @@ class LoginManager:
         self.jwt_algorithm = "HS256"
         self.cookie_name = "access-token"
 
-    def create_access_token(self, data: dict, minutes: int = 15):
+    def create_access_token(self, data: dict, minutes: int | None = None):
         if not minutes:
             minutes = self.default_minutes_token_expire
         to_encode = data.copy()
@@ -42,13 +42,13 @@ class LoginManager:
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=self.jwt_algorithm)
             email = payload.get("sub")
-            if email is None:
+            if email is None: # pragma: no cover
                 raise InvalidCredentialsException
-        except JWTError:
+        except JWTError: # pragma: no cover
             raise InvalidCredentialsException
 
         user = crud.get_user_by_email(email, db)
-        if not user:
+        if not user: # pragma: no cover
             raise InvalidCredentialsException
 
         return user

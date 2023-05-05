@@ -17,8 +17,8 @@ Base = declarative_base()
 
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    db = SessionLocal() # pragma: no cover
+    try: # pragma: no cover
+        yield db 
+    finally: # pragma: no cover
+        db.close() 

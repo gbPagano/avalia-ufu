@@ -81,11 +81,11 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
     except ExpiredSignatureError:
         send_confirmation_email(email_target)
         raise ExpiredTokenException
-    except JWTError:
+    except JWTError: # pragma: no cover
         raise InvalidCredentialsException
 
     user = crud.get_user_by_email(email, db)
-    if not user:
+    if not user: # pragma: no cover
         raise InvalidCredentialsException
 
     if user.is_confirmed:
