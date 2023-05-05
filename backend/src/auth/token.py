@@ -19,7 +19,7 @@ class LoginManager:
         self.jwt_algorithm = "HS256"
         self.cookie_name = "access-token"
 
-    def create_access_token(self, data: dict, minutes: int = 0):
+    def create_access_token(self, data: dict, minutes: int = 15):
         if not minutes:
             minutes = self.default_minutes_token_expire
         to_encode = data.copy()

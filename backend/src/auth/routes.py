@@ -76,7 +76,7 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email = payload.get("sub")
-        if email is None or email != email_target:
+        if not email or email != email_target:
             raise InvalidCredentialsException
     except ExpiredSignatureError:
         send_confirmation_email(email_target)

@@ -10,8 +10,8 @@ EMAIL = "avaliaufu@gmail.com"
 EMAIL_PASSWORD = "ekmdylpytpahvmrb"
 
 
-def send_confirmation_email(email_target: str):
-    token = manager.create_access_token(data={"sub": email_target})
+def send_confirmation_email(email_target: str, minutes=15):
+    token = manager.create_access_token(data={"sub": email_target}, minutes=minutes)
     tgt = symmetric_encrypt(email_target)
     msg = EmailMessage()
     msg["Subject"] = "Confirmação de cadastro - App Wiki UFU"
