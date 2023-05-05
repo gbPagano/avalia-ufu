@@ -20,7 +20,7 @@ app_auth = APIRouter(
 )
 
 
-@app_auth.post("/register")
+@app_auth.post("/register", status_code=201)
 def register(
     response: Response,
     user: schemas.UserCreate,
