@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from .exceptions import InvalidCredentialsException
 from .token import SECRET_KEY
 
+
 def encrypt(password: str) -> str:
     """Receives a password in plain text and returns a hash.
 

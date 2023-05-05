@@ -42,13 +42,13 @@ class LoginManager:
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=self.jwt_algorithm)
             email = payload.get("sub")
-            if email is None: # pragma: no cover
+            if email is None:  # pragma: no cover
                 raise InvalidCredentialsException
-        except JWTError: # pragma: no cover
+        except JWTError:  # pragma: no cover
             raise InvalidCredentialsException
 
         user = crud.get_user_by_email(email, db)
-        if not user: # pragma: no cover
+        if not user:  # pragma: no cover
             raise InvalidCredentialsException
 
         return user

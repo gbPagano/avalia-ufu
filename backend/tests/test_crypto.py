@@ -38,4 +38,3 @@ def test_correct_symmetric_decrypt_returns_the_expected_text():
 def test_wrong_symmetric_decrypt_raises_error():
     with pytest.raises(Exception):
         symmetric_decrypt("wrong")
-

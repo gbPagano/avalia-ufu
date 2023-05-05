@@ -4,10 +4,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.database.core import Base, get_db
 from src.auth.email_sender import send_confirmation_email
+from src.database.core import Base, get_db
 from src.main import app
-
 
 db_test = Path() / "tests/test.db"
 if db_test.exists():
@@ -105,8 +104,8 @@ def test_wrong_login():
     response = client.post(
         "/login",
         headers={
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            'accept': 'application/json'
+            "Content-Type": "application/x-www-form-urlencoded",
+            "accept": "application/json",
         },
         data={
             "username": "test@ufu.br",
@@ -120,8 +119,8 @@ def test_correct_login():
     response = client.post(
         "/login",
         headers={
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            'accept': 'application/json'
+            "Content-Type": "application/x-www-form-urlencoded",
+            "accept": "application/json",
         },
         data={
             "username": "test@ufu.br",
@@ -164,6 +163,7 @@ def test_confirm_account():
     assert response.status_code == 200, response.text
     assert data["is_confirmed"], response.text
 
+
 def test_already_confirmed_account():
     url = send_confirmation_email("test@ufu.br")
     response = client.get(url)
@@ -175,4 +175,3 @@ def test_get_professor_confirmed_works():
     response = client.get("/alexandre")
     assert response.status_code == 200, response.status_code
     assert response.json() == {"professor": "alexandre"}, response.text
-

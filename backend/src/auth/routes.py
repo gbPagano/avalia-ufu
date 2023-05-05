@@ -13,7 +13,6 @@ from .email_sender import send_confirmation_email
 from .exceptions import ExpiredTokenException, InvalidCredentialsException
 from .token import SECRET_KEY, manager
 
-
 app_auth = APIRouter(
     prefix="",
     tags=["authentication"],
@@ -81,11 +80,11 @@ def confirm_account(token: str, tgt: str, db: Session = Depends(core.get_db)):
     except ExpiredSignatureError:
         send_confirmation_email(email_target)
         raise ExpiredTokenException
-    except JWTError: # pragma: no cover
+    except JWTError:  # pragma: no cover
         raise InvalidCredentialsException
 
     user = crud.get_user_by_email(email, db)
-    if not user: # pragma: no cover
+    if not user:  # pragma: no cover
         raise InvalidCredentialsException
 
     if user.is_confirmed:
