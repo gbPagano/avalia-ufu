@@ -44,7 +44,7 @@ class VinculoProfDisc(BaseModel):
         orm_mode = True
     
 # necessário pois a classe Disciplina usa uma entidade Prof que é criada posteriormente
-Disciplina.update_forward_refs()
+Disciplina.model_rebuild()
 
 
 
