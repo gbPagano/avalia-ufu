@@ -30,19 +30,23 @@ class Disciplina(Base):
     id_faculdade = Column(Integer, ForeignKey("faculdades.id_faculdade"), nullable=False, index=True)
 
     nome = Column(String, nullable=False, index=True)
+    dif_media = Column(Float, nullable=False, index=True)
 
     #disc1.professores_desta
     professores_desta = relationship("Prof",
                                     secondary="vinculos_profs_discs",
                                     back_populates="disciplinas_lecionadas",
                                     lazy="joined") 
+    
+    reviews_desta = relationship("Review",
+                                 lazy="joined")
 
-class Vinculos_Profs_Discs(Base):
+class Vinculo_Prof_Disc(Base):
     __tablename__ = "vinculos_profs_discs"
 
     id_vinculo = Column(Integer, primary_key=True, index=True)
-    id_prof = Column(Integer, ForeignKey("profs.id_prof"), primary_key=True)
-    id_disciplina = Column(Integer, ForeignKey("disciplinas.id_disciplina"), primary_key=True)
+    id_prof = Column(Integer, ForeignKey("profs.id_prof"))
+    id_disciplina = Column(Integer, ForeignKey("disciplinas.id_disciplina"))
 
 class Review(Base):
     __tablename__ = "reviews"
@@ -51,10 +55,13 @@ class Review(Base):
     id_prof = Column(Integer, ForeignKey("profs.id_prof"), nullable=False, index=True)    
     id_disciplina = Column(Integer, ForeignKey("disciplinas.id_disciplina"), nullable=False, index=True)
 
-    nome = Column(String, nullable=False, index=True)
+    autor = Column(String, nullable=False, index=True)
     comentario = Column(String, nullable=False, index=True)
     nota = Column(Float, nullable=False, index=True)
+    dif_disciplina = Column(Float, nullable=False, index=True)
     upvotes = Column(Integer, nullable=False, index=True)
+
+    professor = relationship("Prof", lazy="joined")
 
 class Faculdade(Base):
     __tablename__ = "faculdades"

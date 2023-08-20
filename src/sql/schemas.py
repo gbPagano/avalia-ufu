@@ -16,6 +16,7 @@ class Disciplina(BaseModel):
     id_faculdade: int
 
     nome: str
+    dif_media: float
 
     professores_desta: list[Prof] = []
 
@@ -35,11 +36,25 @@ class Prof(BaseModel):
     class Config:
         orm_mode = True
 
-class VinculoProfDisc(BaseModel):
+class Vinculo_Prof_Disc(BaseModel):
     id_vinculo: int
     id_prof: int
     id_disciplina: int
 
+    class Config:
+        orm_mode = True
+
+class Review(BaseModel):
+    id_review: int
+    id_prof: int
+    id_disciplina: int
+
+    autor: str
+    comentario: str
+    nota: float
+    dif_disciplina: float
+    upvotes: int
+    
     class Config:
         orm_mode = True
     

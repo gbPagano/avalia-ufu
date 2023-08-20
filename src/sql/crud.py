@@ -31,7 +31,10 @@ def get_profs_lecionando(db: Session, id_disc_input: int):
     return disc.professores_desta
 
 def get_vinculos(db: Session):
-    return db.query(models.Vinculos_Profs_Discs).all();
+    return db.query(models.Vinculo_Prof_Disc).all();
+
+def get_reviews_disc(db: Session, id_disc: int):
+    return db.query(models.Review).filter(models.Disciplina.id_disciplina == id_disc).all()
 
 # creates 
 
@@ -51,8 +54,8 @@ def criar_disc(db: Session, disc: schemas.Disciplina):
     db.refresh(db_disc)
     return db_disc
 
-def criar_vinculo_prof_disc(db: Session, vinculo: schemas.VinculoProfDisc):
-    db_vinculo = models.Vinculos_Profs_Discs(id_vinculo=vinculo.id_vinculo, 
+def criar_vinculo_prof_disc(db: Session, vinculo: schemas.Vinculo_Prof_Disc):
+    db_vinculo = models.Vinculo_Prof_Disc(id_vinculo=vinculo.id_vinculo, 
                                              id_prof=vinculo.id_prof, 
                                              id_disciplina=vinculo.id_disciplina)
     db.add(db_vinculo)

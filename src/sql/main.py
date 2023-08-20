@@ -49,11 +49,19 @@ def ler_discs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     discs = crud.get_disciplinas(db=db, skip=skip, limit=limit)
     return discs
 
-@app.post("/vinculos/", response_model=schemas.VinculoProfDisc)
-def registrar_vinculo_prof_disc(vinculo: schemas.VinculoProfDisc, db: Session = Depends(get_db)):
+@app.get("/discs/{disc_id}")
+def ler_disc(disc_id, db: Session = Depends(get_db)):
+    return crud.get_disciplina(db=db, id_disc_input=disc_id)
+
+@app.post("/vinculos/", response_model=schemas.Vinculo_Prof_Disc)
+def registrar_vinculo_prof_disc(vinculo: schemas.Vinculo_Prof_Disc, db: Session = Depends(get_db)):
     return crud.criar_vinculo_prof_disc(db=db, vinculo=vinculo)
 
-@app.get("/vinculos/", response_model=list[schemas.VinculoProfDisc])
+@app.get("/vinculos/", response_model=list[schemas.Vinculo_Prof_Disc])
 def get_vinculos(db: Session = Depends(get_db)):
     return crud.get_vinculos(db)
+
+@app.get("/reviews/{id_disc}")
+def ler_review(id_disc, db: Session = Depends(get_db)):
+    return crud.get_reviews_disc(db=db, id_disc=id_disc)
 

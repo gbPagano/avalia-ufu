@@ -44,3 +44,13 @@ body {
 .card-professor {
   background-color: gray;
 }
+
+.card-disciplina {
+  background-color: gray;
+}
+
+.card-review {
+  background-color: darkgray;
+  margin: 1rem;
+  padding: 0.5rem;
+}
