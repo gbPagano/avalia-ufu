@@ -43,14 +43,21 @@ body {
 
 .card-professor {
   background-color: gray;
+  border-radius: .5rem;
+  margin: 1rem;
+  padding: 0.05rem 0.5rem 0.5rem 1rem;
 }
 
 .card-disciplina {
   background-color: gray;
+  border-radius: .5rem;
+  margin: 1rem;
+  padding: 0.05rem 0.5rem 0.5rem 1rem;
 }
 
 .card-review {
   background-color: darkgray;
+  border-radius: .5rem;
   margin: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
 }
