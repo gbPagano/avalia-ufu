@@ -19,7 +19,7 @@ function App() {
         <Route path="/professores" element={<Professores />} />
         <Route path="/disciplinas" element={<Disciplinas />} />
         <Route path="/disciplina/:id" element={<Disciplina />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/sobre" element={<About />} />
       </Routes>
     </div>
   );
