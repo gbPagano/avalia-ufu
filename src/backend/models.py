@@ -74,6 +74,7 @@ class Review(Base):
     upvotes = Column(Integer, nullable=False, index=True)
 
     professor = relationship("Prof", lazy="joined")
+    # kjodasod
 
 
 class Faculdade(Base):
