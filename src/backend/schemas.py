@@ -4,27 +4,31 @@ from pydantic import BaseModel
 
 # contém somente models do pydantic
 
+
 class Faculdade(BaseModel):
-    id_faculdade: int
+    id: int
     nome: str
 
     class Config:
         orm_mode = True
+
 
 class Disciplina(BaseModel):
-    id_disciplina: int
+    id: int
     id_faculdade: int
 
     nome: str
-    dif_media: float
+    dificuldade: float
 
     professores_desta: list[Prof] = []
+    reviews_desta: list[Review] = []
 
     class Config:
         orm_mode = True
 
+
 class Prof(BaseModel):
-    id_prof: int
+    id: int
     id_faculdade: int
 
     nome: str
@@ -32,41 +36,44 @@ class Prof(BaseModel):
     nota: float
 
     disciplinas_lecionadas: list[Disciplina] = []
-    
+
     class Config:
         orm_mode = True
+
 
 class Vinculo_Prof_Disc(BaseModel):
-    id_vinculo: int
+    id: int
     id_prof: int
-    id_disciplina: int
+    id_disc: int
 
     class Config:
         orm_mode = True
 
+
 class Review(BaseModel):
-    id_review: int
+    id: int
     id_prof: int
-    id_disciplina: int
+    id_disc: int
 
     autor: str
     comentario: str
     nota: float
-    dif_disciplina: float
+    dif_disc: float
     upvotes: int
-    
+
     class Config:
         orm_mode = True
-    
-# necessário pois a classe Disciplina usa uma entidade Prof que é criada posteriormente
+
+
+class CreateReview(BaseModel):
+    id_prof: int
+    id_disc: int
+    autor: str
+    comentario: str
+    nota: float
+    dif_disc: float
+    upvotes: int
+
+
+# necessário pois a classe Disciplina usa a entidade Prof que é criada posteriormente
 Disciplina.model_rebuild()
-
-
-
-
-
-
-
-
-
-    

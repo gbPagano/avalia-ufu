@@ -53,7 +53,7 @@ VALUES
 (14, 'Odilia Conrath', 'nulla eget eros elementum pellentesque quisque porta volutpat erat quisque erat eros viverra', 4.19176);
 
 
-INSERT INTO disciplinas (id_faculdade, nome, dif_media)
+INSERT INTO disciplinas (id_faculdade, nome, dificuldade)
 VALUES
 (13, 'Cálculo Diferencial e Integral I', 8),
 (13, 'Cálculo Diferencial e Integral II', 8),
@@ -103,7 +103,7 @@ VALUES
 (5, 'Ciências Sociais e Jurídicas', 6),
 (12, 'Administração', 5);
 
-INSERT INTO vinculos_profs_discs (id_prof, id_disciplina)
+INSERT INTO vinculos_profs_discs (id_prof, id_disc)
 VALUES
 (8,9),
 (4,34),
@@ -205,7 +205,7 @@ VALUES
 (7,24),
 (7,2);
 
-INSERT INTO reviews (id_prof, id_disciplina, autor, comentario, nota, dif_disciplina, upvotes) 
+INSERT INTO reviews (id_prof, id_disc, autor, comentario, nota, dif_disc, upvotes) 
 VALUES 
 (1, 21, 'btowhey0', 'In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.
 
