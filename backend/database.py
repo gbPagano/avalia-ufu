@@ -1,11 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import URL
 
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./avalia_ufu.db"
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost/wikiprof"
+db_url = URL.create(
+    drivername="postgresql+psycopg2",
+    username="postgres",
+    password="postgres",
+    host="db",
+    database="wikiprof",
+    port="5432",
+)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(db_url)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
