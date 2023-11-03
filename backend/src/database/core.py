@@ -14,9 +14,9 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_db():
-    db = SessionLocal()  # pragma: no cover
-    try:  # pragma: no cover
+def get_db(): # pragma: no cover 
+    db = SessionLocal()
+    try:
         yield db
-    finally:  # pragma: no cover
+    finally:
         db.close()

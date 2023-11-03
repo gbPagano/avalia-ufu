@@ -16,7 +16,7 @@ def send_confirmation_email(email_target: str, minutes=15):
     msg = EmailMessage()
     msg["Subject"] = "Confirmação de cadastro - App Wiki UFU"
     msg["From"] = "Avalia UFU"
-    msg["To"] = "guilhermebpagano@gmail.comdada"
+    msg["To"] = "guilhermebpagano@gmail.com"
     msg.set_content(
         f"""
         Click no link abaixo para validar a sua conta:
