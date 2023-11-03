@@ -5,31 +5,23 @@ import usericon from "./img/user.png";
 import CreateReviewPortal from "../components/CreateReviewPortal";
 import ReviewSentOKModalContent from "../components/ReviewSentOKModalContent";
 
-export default function Professores() {
-  const apiUrl = "http://127.0.0.1:8000/profs";
+import Api from "../api/Api.js";
 
-  const [data, setData] = useState([]);
+export default function Professores() {
+  const [profs, setProfs] = useState([]);
+  const [faculs, setFaculs] = useState([]);
   const [showReviewSentOKModal, setShowReviewSentOKModal] = useState(false);
 
-  const fetchInfo = (param) => {
-    if (!param) {
-      return fetch(apiUrl)
-        .then((res) => res.json())
-        .then((data) => setData(data));
-    }
-
-    return fetch(apiUrl + "?sort=" + param)
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  };
-
   useEffect(() => {
-    fetchInfo();
+    Api.getProfs().then((profs) => setProfs(profs));
+    Api.getFaculs().then((faculs) => setFaculs(faculs));
   }, []);
 
   function handleSortChange(e) {
-    fetchInfo(e.target.value);
+    Api.getProfs(e.target.value).then((profs) => setProfs(profs));
   }
+
+  function handleFaculChange(e) {}
 
   const handleReviewSent = (showReviewSentOKModalBool) => {
     setShowReviewSentOKModal(showReviewSentOKModalBool);
@@ -41,18 +33,29 @@ export default function Professores() {
         isOpen={showReviewSentOKModal}
         onClose={() => setShowReviewSentOKModal(false)}
       />
-      <div class="pt-6 pb-4">
-        <p class="text-white font-custom inline pr-4 pl-12">Ordenar por: </p>
-        <select onChange={handleSortChange} class="inline p-2 rounded-xl">
-          <option value="">nenhum filtro</option>
-          <option value="a-z">nome crescente</option>
-          <option value="z-a">nome decrescente</option>
-          <option value="Nn">maior nota</option>
-          <option value="nN">menor nota</option>
-        </select>
+      <div class="pt-6 pb-4 flex flex-row gap-10 w-1/3 items-center">
+        <div class="flex items-center">
+          <p class="text-white font-custom inline pr-4 pl-12">Ordenar por: </p>
+          <select onChange={handleSortChange} class="inline p-2 rounded-xl">
+            <option value="">nenhum filtro</option>
+            <option value="a-z">nome crescente</option>
+            <option value="z-a">nome decrescente</option>
+            <option value="Nn">maior nota</option>
+            <option value="nN">menor nota</option>
+          </select>
+        </div>
+        <div class="flex flex-row w-48 items-center justify-between">
+          <p class="font-custom  text-white">Faculdade:</p>
+          <select onChange={handleFaculChange} class="inline p-2 rounded-xl">
+            <option value="-1">Todas</option>
+            {faculs.map((facul) => {
+              return <option value={facul.id}>{facul.nome}</option>;
+            })}
+          </select>
+        </div>
       </div>
       <div class="grid p-4 gap-y-0 gap-x-6 grid-cols-5">
-        {data.map((prof) => {
+        {profs.map((prof) => {
           return (
             <div
               id="prof-card-container"

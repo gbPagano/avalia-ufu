@@ -5,6 +5,10 @@ import models, schemas
 # gets
 
 
+def get_faculs(db: Session):
+    return db.query(models.Faculdade).all()
+
+
 def get_prof(db: Session, id_prof_input: int):
     return db.query(models.Prof).filter(models.Prof.id == id_prof_input).first()
 
@@ -45,6 +49,16 @@ def get_profs(sort: str | None, db: Session, skip: int = 0, limit: int = 100):
             .limit(limit)
             .all()
         )
+
+
+def get_profs_by_facul(id_facul: int, db: Session, skip: int = 0, limit: int = 100):
+    return (
+        db.query(models.Prof)
+        .filter(models.Prof.id_faculdade == id_facul)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def get_disciplina(db: Session, id_disc_input: int):

@@ -4,22 +4,16 @@ import Review from "../components/Review";
 import { BiTachometer } from "react-icons/bi";
 import chroma from "chroma-js";
 
+import Api from "../api/Api.js";
+
 export default function Disciplina() {
   let { id } = useParams();
-
-  const apiUrl = `http://127.0.0.1:8000/discs/${id}`;
 
   const [disciplina, setDisciplina] = useState();
 
   useEffect(() => {
-    fetchInfo();
-  }, []);
-
-  const fetchInfo = async () => {
-    return await fetch(apiUrl)
-      .then((res) => res.json())
-      .then((disciplina) => setDisciplina(disciplina));
-  };
+    Api.getDisc(id).then((disciplina) => setDisciplina(disciplina));
+  }, [id]);
 
   if (disciplina) {
     return (

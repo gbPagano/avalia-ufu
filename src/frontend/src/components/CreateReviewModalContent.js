@@ -1,4 +1,4 @@
-import createReview from "../api/createReview";
+import Api from "../api/Api.js";
 import { useState } from "react";
 
 export default function CreateReviewModalContent({
@@ -88,7 +88,7 @@ export default function CreateReviewModalContent({
         <button
           class="px-5 py-2 text-sm text-white font-bold rounded-full bg-cyan-600 hover:bg-cyan-800"
           onClick={async () => {
-            await createReview("autorTeste", prof, disc, {
+            await Api.postReview("autorTeste", prof, disc, {
               comment: comment,
               profScore: profScore,
               discDifficulty: difDisc,

@@ -9,7 +9,7 @@ import {
 import { MdGrade } from "react-icons/md";
 import chroma from "chroma-js";
 import { useState } from "react";
-import postVote from "../api/postVote.js";
+import Api from "../api/Api.js";
 
 export default function Review({ review }) {
   const [upvoted, setUpvoted] = useState(false);
@@ -20,9 +20,9 @@ export default function Review({ review }) {
     if (downvoted) return;
 
     if (upvoted) {
-      postVote(review.id, 0).then((newUpvotes) => setUpvotes(newUpvotes));
+      Api.postVote(review.id, 0).then((newUpvotes) => setUpvotes(newUpvotes));
     } else {
-      postVote(review.id, 1).then((newUpvotes) => setUpvotes(newUpvotes));
+      Api.postVote(review.id, 1).then((newUpvotes) => setUpvotes(newUpvotes));
     }
 
     setUpvoted(!upvoted);
@@ -32,9 +32,9 @@ export default function Review({ review }) {
     if (upvoted) return;
 
     if (downvoted) {
-      postVote(review.id, 1).then((newUpvotes) => setUpvotes(newUpvotes));
+      Api.postVote(review.id, 1).then((newUpvotes) => setUpvotes(newUpvotes));
     } else {
-      postVote(review.id, 0).then((newUpvotes) => setUpvotes(newUpvotes));
+      Api.postVote(review.id, 0).then((newUpvotes) => setUpvotes(newUpvotes));
     }
 
     setDownvoted(!downvoted);
@@ -81,6 +81,12 @@ export default function Review({ review }) {
             />
           </button>
         </div>
+        <button>
+          <BiSolidFlagAlt
+            size={20}
+            color={chroma("red").desaturate(2).brighten(2)}
+          />
+        </button>
       </div>
     </div>
   );

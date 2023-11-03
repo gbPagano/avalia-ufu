@@ -39,6 +39,11 @@ def criar_prof(prof: schemas.Prof, db: Session = Depends(get_db)):
     return crud.criar_prof(db=db, prof=prof)
 
 
+@app.get("/faculs/")
+def get_faculs(db: Session = Depends(get_db)):
+    return crud.get_faculs(db=db)
+
+
 @app.get("/profs/")
 def ler_profs(
     sort: str | None = None,
@@ -48,6 +53,13 @@ def ler_profs(
 ):
     profs = crud.get_profs(sort=sort, db=db, skip=skip, limit=limit)
     return profs
+
+
+@app.get("/profs/{id_facul}")
+def get_profs_by_facul(
+    id_facul: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    return crud.get_profs_by_facul(id_facul=id_facul, skip=skip, limit=limit, db=db)
 
 
 @app.post("/discs/", response_model=schemas.Disciplina)

@@ -3,31 +3,17 @@ import ReviewPortal from "../components/ReviewPortal.js";
 import { BiTachometer } from "react-icons/bi";
 import chroma from "chroma-js";
 
-export default function Disciplinas() {
-  const apiUrl = "http://127.0.0.1:8000/discs";
+import Api from "../api/Api.js";
 
+export default function Disciplinas() {
   const [data, setData] = useState([]);
 
-  const fetchInfo = (param) => {
-    if (!param) {
-      return fetch(apiUrl)
-        .then((res) => res.json())
-        .then((data) => setData(data));
-    }
-
-    console.log(param);
-
-    return fetch(apiUrl + "?sort=" + param)
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  };
-
   useEffect(() => {
-    fetchInfo();
+    Api.getDiscs().then((discs) => setData(discs));
   }, []);
 
   function handleSortChange(e) {
-    fetchInfo(e.target.value);
+    Api.getDiscs(e.target.value).then((discs) => setData(discs));
   }
 
   return (
