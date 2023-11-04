@@ -1,7 +1,11 @@
 #!/bin/bash
 
-uvicorn main:app --host 0.0.0.0 --port 8000 
-# alembic revision --autogenerate -m "First migration"
-# (alembic upgrade head && alembic upgrade e0b3ac51a714)
+uvicorn main:app --host 0.0.0.0 --port 8000 &
+sleep 3 
+echo Populando o banco... 
+alembic upgrade head && echo Banco populado com sucesso.
 
-# alembic upgrade head && alembic revision --autogenerate -m "Creating tables" && PGPASSWORD=postgres psql -h db -U postgres -d wikiprof -a -f /populate.sql 
+while true
+do
+    sleep 1
+done
