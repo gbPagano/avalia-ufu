@@ -3,7 +3,6 @@
 1. Change or remove the persisted volume location of `db` inside `compose.yml`
 2. Run `docker compose up`
 
-
 # Diagramas de Casos de Uso
 
 ```mermaid
@@ -13,7 +12,6 @@ graph LR
     . --> Administradores
     . --> Professores
 ```
-
 
 ---
 
@@ -34,9 +32,7 @@ graph LR
     Avaliar --> Curtir-Comentários
 ```
 
-
 ---
-
 
 ```mermaid
 graph LR
@@ -45,7 +41,6 @@ graph LR
     Moderador --> Aceitar_Recusar-Comentário-Barrados-Filtro
     Moderador --> Utilizar-Como-Aluno
 ```
-
 
 ---
 
@@ -57,7 +52,6 @@ graph LR
     Administrador --> Manutenir-Aplicação
     Administrador --> Utilizar-Como-Moderador
 ```
-
 
 ---
 
@@ -73,7 +67,6 @@ graph LR
 
     Professor --> Receber-Notificações-Avaliações
 ```
-
 
 ---
 
@@ -146,4 +139,3 @@ graph LR
   - Validar professores
 
     - Cadastro somente por solicitação via email
-
