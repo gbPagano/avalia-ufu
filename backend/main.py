@@ -3,7 +3,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 import crud, schemas, models
-from database import SessionLocal, engine
+from database import get_db, engine
+from routes import app_auth
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,14 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
+app.include_router(app_auth, prefix="")
 
 @app.post("/faculs/", response_model=schemas.Faculdade)
 def criar_facul(facul: schemas.Faculdade, db: Session = Depends(get_db)):

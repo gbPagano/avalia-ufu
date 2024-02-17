@@ -1,11 +1,31 @@
 from __future__ import annotations
 
-from sqlalchemy import Table, Boolean, Column, ForeignKey, Integer, String, Float
-from sqlalchemy.orm import relationship, Mapped
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, Enum
+from sqlalchemy.orm import relationship 
 
 from database import Base
 
+import enum
+
 # contém somente models do sqlalchemy
+
+class Role(enum.Enum):
+    user = "user"
+    moderator = "moderator"
+    admin = "admin"
+    prof = "prof"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    registration = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    is_confirmed = Column(Boolean)
+    role = Column(Enum(Role))
 
 
 class Prof(Base):
