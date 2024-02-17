@@ -1,7 +1,7 @@
 # Usage
 
 1. Change or remove the persisted volume location of `db` inside `compose.yml`
-2. Run `docker compose up``
+2. Run `docker compose up`
 
 # Diagramas de Casos de Uso
 
