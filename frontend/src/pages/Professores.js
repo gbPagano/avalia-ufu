@@ -21,7 +21,7 @@ export default function Professores() {
     Api.getProfs(e.target.value).then((profs) => setProfs(profs));
   }
 
-  function handleFaculChange(e) {}
+  function handleFaculChange(e) { }
 
   const handleReviewSent = (showReviewSentOKModalBool) => {
     setShowReviewSentOKModal(showReviewSentOKModalBool);

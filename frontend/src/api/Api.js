@@ -29,8 +29,8 @@ export default class Api {
   static getDiscs = async (param) => {
     return param
       ? await axios
-          .get(this.getDiscsURL + "?sort=" + param)
-          .then((res) => res.data)
+        .get(this.getDiscsURL + "?sort=" + param)
+        .then((res) => res.data)
       : await axios.get(this.getDiscsURL).then((res) => res.data);
   };
 

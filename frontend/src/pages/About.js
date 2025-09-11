@@ -3,8 +3,7 @@ export default function About() {
     <div class="h-screen text-white font-custom">
       <h1 class="font-bold text-xl pl-10 pt-5">Sobre</h1>
       <p class="pt-10 pl-16">
-        O intuito desse site é facilitar a vida dos estudantes e ajudar a gente
-        a praticar. Só isso mesmo.
+        O objetivo deste projeto é fornecer uma avaliação docente mais interativa e aberta entre os estudantes
       </p>
     </div>
   );
